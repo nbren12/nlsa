@@ -39,6 +39,8 @@ def embed_pdist(C, q):
 @autojit
 def compute_autotuning(C):
     """
+    uses second order centered difference
+
     Returns:
     xi:  |x_i- x_{i-1}|^2
     """

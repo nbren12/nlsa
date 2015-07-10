@@ -6,6 +6,10 @@ import pickle
 from scipy.sparse.linalg import eigsh
 
 
+rule eigs2orthog:
+    input: "eigs.pkl"
+    output: "orthog.pkl"
+
 rule eigs:
     input: "K.npz"
     params: neig="100"

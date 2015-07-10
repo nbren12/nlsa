@@ -7,5 +7,6 @@ phi = d['phi']
 df = pd.DataFrame(phi/phi[:,0][:,None])
 # df = pd.DataFrame(phi)
 df.ix[:,:20].plot(subplots=True, layout=(-1,3))
+df.to_csv("out.csv")
 plt.show()
  

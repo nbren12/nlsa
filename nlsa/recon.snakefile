@@ -103,7 +103,7 @@ rule pkl2nc:
     output: "{dir}/{tag}/R{recon}/recon.nc"
     run:
         tag= wildcards.tag
-        base, t = get_data(config, tag).isel(t=0)
+        base = get_data(config, tag)[0].isel(t=0)
         df = pd.read_pickle(input[0])
         df2xray(df.index, df.values, base, name='w')\
             .to_dataset()\

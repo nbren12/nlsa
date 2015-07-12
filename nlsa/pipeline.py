@@ -7,8 +7,7 @@ import numpy as np, pandas as pd
 import xray
 
 
-from .data import phi, metric
-from .nlsa import project_lag
+from .recon import project_lag
 import sys
 
 def get_lag_from_fn(filename):

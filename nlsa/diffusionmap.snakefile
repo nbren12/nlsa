@@ -25,7 +25,7 @@ rule eigs2orthog:
         phi=  pd.DataFrame(phi, index=t)
         phi['metric'] = metric
 
-        phi.to_pickle(output[0])
+        phi.dropna().to_pickle(output[0])
 
 
 

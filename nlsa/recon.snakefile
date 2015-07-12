@@ -56,15 +56,18 @@ rule wT:
             .to_netcdf(output[0])
 
 rule svd:
-    input: "{dir}/amat.nc"
-    output: a="{dir}/S{svdspec}/svd.pkl", o="{dir}/S{svdspec}/orthog.pkl"
+    input: "{dir}/{tag}/amat.nc", phi="{dir}/orthog.pkl"
+    output: a="{dir}/{tag}/S{svdspec}/svd.pkl", o="{dir}/{tag}/S{svdspec}/orthog.pkl"
     run:
         from numpy.linalg import svd
         amat = xray.open_dataset(input[0])['amat']
 
-
-        spec = config['svds'][os.path.dirname(output[0])]
+        svddir = os.path.dirname(output[0])
+        spec = config['svds'][svddir]
         inds = range(spec)
+
+        # Load eigenvalues
+        phi =  pd.read_pickle(input.phi[0])
 
         U, S, V = svd(amat.values[:,inds], full_matrices=False)
         vT  = phi.ix[:,inds].dot(V.T)
@@ -80,7 +83,7 @@ rule alags:
     output: "{dir}/{tag}/amat.nc"
     run:
         tag= wildcards.tag
-        base, t = get_data(config, tag).isel(t=0)
+        base = get_data(config, tag)[0].isel(t=0)
         As = []
         lags = []
 

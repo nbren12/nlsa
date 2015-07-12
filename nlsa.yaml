@@ -9,7 +9,7 @@ recons:
     linmap: [1,2]
     time_range: [10000, 13000]
 svds:
-  alpha0/nu/S1: 50
+  wthermo/q20/e1_a0/wthermo/S1: 50
 tags:
 - wthermo
 - T

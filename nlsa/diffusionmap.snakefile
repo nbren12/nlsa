@@ -1,3 +1,4 @@
+from nlsa.io import get_data
 from nlsa.diffusionmap import pdist_dask, compute_kernel, embed_pdist, compute_autotuning
 import h5py
 import xray
@@ -5,8 +6,6 @@ import numpy as np
 import pickle
 from scipy.sparse.linalg import eigsh
 import imp
-
-data = imp.load_source("data", "data.py")
 
 rule eigs2orthog:
     input: eigs="{tag}/{a}/{b}/eigs.pkl", time="{tag}/time.npz"
@@ -100,11 +99,7 @@ rule data:
     output: data="{tag}/data.npz", time="{tag}/time.npz"
     params: tag="{tag}"
     run:
-        datakw = config['data'][params.tag]
-        varname = datakw[ 'var' ]
-        tdim = datakw['tdim']
-
-        v = getattr(data, varname)
+        v, tdim = get_data(config, wildcards.tag)
         v = v.fillna(0.0)
 
         nt = len(v.coords[tdim])

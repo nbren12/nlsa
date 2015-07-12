@@ -156,9 +156,3 @@ rule split:
         phi  = pd.read_pickle(input[0])
         mk_amat(output[0], base, int(wildcards.lag), phi, field='w')
 
-rule phi:
-    output: "alpha0/orthog.pkl"
-    run:
-        phi['metric'] = metric
-        phi.to_pickle(output[0])
-

@@ -3,13 +3,13 @@ data:
     module: /home/noah/scratch/nlsa/data.py
     var: w
     tdim: t
-lags: 20
+lags: 200
 recons:
   wthermo/q200/e1_a0/{tag}/Roscil:
     linmap: [1,2]
     time_range: [10000, 13000]
 svds:
-  wthermo/q20/e1_a0/wthermo/S1: 50
+  wthermo/q200/e1_a0/wthermo/S1: 50
 tags:
 - wthermo
 - T

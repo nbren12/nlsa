@@ -68,14 +68,27 @@ rule svd:
 
         # Load eigenvalues
         phi =  pd.read_pickle(input.phi[0])
+        amat = amat.sel(eignum=inds)
 
-        U, S, V = svd(amat.values[:,inds], full_matrices=False)
+        # Turn amat into flat array
+        dims = [dim for dim in amat.dims]
+
+        ## Move eignum dim to end
+        dims.remove('eignum')
+        dims.append('eignum')
+        amat = amat.transpose(*dims)
+
+        ## Reshape data
+        neig = amat.shape[-1]
+        amat = np.reshape( amat.values, (-1, neig))
+
+        U, S, V = svd(amat, full_matrices=False)
         vT  = phi.ix[:,inds].dot(V.T)
 
         pickle.dump( (U, S, V, vT), open(output.a[0], "wb"))
 
-        vT['metric'] = metric
-        vT.to_pickle(output.o[0])
+        vT['metric'] = phi.metric
+        vT.dropna().to_pickle(output.o[0])
 
 
 rule alags:

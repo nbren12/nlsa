@@ -8,8 +8,8 @@ from scipy.sparse.linalg import eigsh
 import imp
 
 rule eigs2orthog:
-    input: eigs="{tag}/{a}/{b}/eigs.pkl", time="{tag}/time.npz"
-    output: "{tag}/{a}/{b}/orthog.pkl"
+    input: eigs="{tag}/{a}/E{b,[^/]*}/eigs.pkl", time="{tag}/time.npz"
+    output: "{tag}/{a}/E{b,[^/]*}/orthog.pkl"
     run: 
         import pandas as pd
 
@@ -30,9 +30,9 @@ rule eigs2orthog:
 
 
 rule eigs:
-    input: "{dir}/K.npz"
+    input: "{dir}/E{a}/K.npz"
     params: neig="100"
-    output: "{dir}/eigs.pkl"
+    output: "{dir}/E{a}/eigs.pkl"
     run:
         neig = int(params.neig)
         K = np.load(input[0])['arr_0']
@@ -56,7 +56,7 @@ rule eigs:
 
 rule kernel:
     input: at="{dir}/at.npz", dist="{dir}/emb_pdist.npz"
-    output: "{dir}/e{eps}_a{alpha}/K.npz"
+    output: "{dir}/Ee{eps}_a{alpha}/K.npz"
     run:
         alpha = float(wildcards.alpha)
         eps = float(wildcards.eps)

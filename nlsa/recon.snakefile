@@ -57,7 +57,7 @@ rule wT:
 
 rule svd:
     input: "{dir}/{tag}/amat.nc", phi="{dir}/orthog.pkl"
-    output: a="{dir}/{tag}/S{svdspec}/svd.pkl", o="{dir}/{tag}/S{svdspec}/orthog.pkl"
+    output: a="{dir}/{tag}/S{svdspec,[^/]*}/svd.pkl", o="{dir}/{tag}/S{svdspec,[^/]*}/orthog.pkl"
     run:
         from numpy.linalg import svd
         amat = xray.open_dataset(input[0])['amat']

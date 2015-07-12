@@ -9,8 +9,26 @@ import imp
 data = imp.load_source("data", "data.py")
 
 rule eigs2orthog:
-    input: "eigs.pkl"
-    output: "orthog.pkl"
+    input: eigs="{tag}/{a}/{b}/eigs.pkl", time="{tag}/time.npz"
+    output: "{tag}/{a}/{b}/orthog.pkl"
+    run: 
+        import pandas as pd
+
+        d = np.load(input.eigs[0])
+        t = np.load(input.time[0])['arr_0']
+
+        phi = d['phi']
+        metric = phi[:,0].copy()**2
+        tot = metric[-np.isnan(metric)].sum()
+        metric /= tot
+        phi = phi[:,1:]/phi[:,0][:,None]
+
+        phi=  pd.DataFrame(phi, index=t)
+        phi['metric'] = metric
+
+        phi.to_pickle(output[0])
+
+
 
 rule eigs:
     input: "{dir}/K.npz"
@@ -79,7 +97,7 @@ rule pdist:
 
 
 rule data:
-    output: "{tag}/data.npz"
+    output: data="{tag}/data.npz", time="{tag}/time.npz"
     params: tag="{tag}"
     run:
         datakw = config['data'][params.tag]
@@ -90,5 +108,10 @@ rule data:
         v = v.fillna(0.0)
 
         nt = len(v.coords[tdim])
+        
         out = np.reshape(v.values, (nt, -1))
-        np.savez(output[0], out)
+        np.savez(output.data[0], out)
+
+
+        time = np.asarray(v.coords[tdim])
+        np.savez(output.time[0], time)

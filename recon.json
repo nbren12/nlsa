@@ -1,0 +1,41 @@
+{
+    "data": {
+        "wthermo":{
+            "obj": ["rayben.data", "isotemp", "w"]
+        },
+
+        "T":{
+            "obj": ["rayben.data", "raw", "T"]
+        },
+
+        "uX":{
+            "obj": ["rayben.data", "raw", "uX"]
+        },
+        "nu":{
+            "obj": ["rayben.data", "nuds", "demean"]
+        }
+    },
+    "lags": 20,
+    "recons": {
+        "alpha0/{tag}/Roscil":{
+            "linmap": [1, 2],
+            "time_range": [10000, 13000]},
+        "alpha0/{tag}/R5":{
+            "linmap": [5],
+            "time_range": [10000, 17000]},
+        "alpha0/{tag}/R15":{
+            "linmap": [15],
+            "time_range": [10000, 17000]},
+        "alpha0/nu/S1/{tag}/Rall":{
+            "linmap": [0,1,2,3,4,5],
+            "time_range": [10000, 13000]},
+        "alpha0/nu/S1/{tag}/Rlow":{
+            "linmap": [5,],
+            "time_range": [10000, 13000]},
+        "alpha0/nu/S1/{tag}/Rhigh":{
+            "linmap": [1,2],
+            "time_range": [10000, 13000]}
+    },
+    "svds": {"alpha0/nu/S1": 50},
+    "tags": ["wthermo", "T", "uX"]
+}

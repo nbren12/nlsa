@@ -14,7 +14,7 @@ configfile: "nlsa.yaml"
 workdir: "anl"
 
 rule all:
-    input: "wthermo/q20/eigs.pkl"
+    input: "wthermo/q20/e1_a1/eigs.pkl"
 
 rule eigs2orthog:
     input: "eigs.pkl"
@@ -47,14 +47,14 @@ rule eigs:
 
 rule kernel:
     input: at="{dir}/at.npz", dist="{dir}/emb_pdist.npz"
-    output: "{dir}/K.npz"
-    params: eps="1.0", alpha="1.0"
+    output: "{dir}/e{eps}_a{alpha}/K.npz"
     run:
-        alpha = float(params.alpha)
+        alpha = float(wildcards.alpha)
+        eps = float(wildcards.eps)
 
         xi = np.load(input.at[0])['arr_0']
         dist = np.load(input.dist[0])['arr_0']
-        K = compute_kernel(dist, xi, float(params.eps))
+        K = compute_kernel(dist, xi, float(eps))
 
 
         norm = K.sum(axis=0)

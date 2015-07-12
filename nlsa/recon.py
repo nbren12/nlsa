@@ -3,18 +3,17 @@ import numpy as np
 from numpy.linalg import svd, lstsq
 
 
-def project_lag(metric, phi, data, lag):
+def project_lag(phi, data, lag):
     """Project lags"""
 
     data.index += lag
-    data, phi = data.align(phi, join='inner', axis=0)
+    data, phi = data.align(phi.dropna(), join='inner', axis=0)
+    metric = phi['metric'].values
+
     data.fillna(0.0, inplace=True)
 
     phi_w = phi.values * np.sqrt(metric)[:,None]
     data_w = data.values * np.sqrt(metric)[:,None]
-    # phi_w = phi.values * metric[:,None]
-    # data_w = data.values * metric[:,None]
-
     return data.index, lstsq(phi_w, data_w)[0]
 
 def concatlags(A):

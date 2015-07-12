@@ -34,7 +34,7 @@ def mk_amat(output_filename, data, lag, phi, field='T'):
     data = pd.DataFrame(arr, index=data.coords[data.dims[0]])
 
 
-    out = project_lag(phi.metric, phi, data, lag)
+    out = project_lag(phi, data, lag)
     with open(output_filename, "wb") as f:
         pickle.dump(out, f)
 

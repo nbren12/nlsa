@@ -4,16 +4,26 @@ import xray
 import numpy as np
 import pickle
 from scipy.sparse.linalg import eigsh
+import imp
 
+data = imp.load_source("data", "data.py")
+configfile: "nlsa.yaml"
+
+
+# Before Change directory
+workdir: "anl"
+
+rule all:
+    input: "wthermo/q20/eigs.pkl"
 
 rule eigs2orthog:
     input: "eigs.pkl"
     output: "orthog.pkl"
 
 rule eigs:
-    input: "K.npz"
+    input: "{dir}/K.npz"
     params: neig="100"
-    output: "eigs.pkl"
+    output: "{dir}/eigs.pkl"
     run:
         neig = int(params.neig)
         K = np.load(input[0])['arr_0']
@@ -36,8 +46,8 @@ rule eigs:
 
 
 rule kernel:
-    input: at="at.npz", dist="emb_pdist.npz"
-    output: "K.npz"
+    input: at="{dir}/at.npz", dist="{dir}/emb_pdist.npz"
+    output: "{dir}/K.npz"
     params: eps="1.0", alpha="1.0"
     run:
         alpha = float(params.alpha)
@@ -54,16 +64,16 @@ rule kernel:
         np.savez(output[0], K)
 
 rule embed_dist:
-    input: "pdist.npz"
-    params: q="200"
-    output: "emb_pdist.npz"
+    input: "{tag}/pdist.npz"
+    output: "{tag}/q{q}/emb_pdist.npz"
+    params: q="{q}"
     run:
         C = np.load(input[0])['arr_0']
         Cemb = embed_pdist(C, int(params.q))
         np.savez(output[0], Cemb)
 rule at:
-    input: "emb_pdist.npz"
-    output: "at.npz"
+    input: "{dir}/emb_pdist.npz"
+    output: "{dir}/at.npz"
     run:
         C = np.load(input[0])['arr_0']
         at = compute_autotuning(C)
@@ -71,22 +81,22 @@ rule at:
 
 
 rule pdist:
-    input: "data.npz"
-    output: "pdist.npz"
-    shell: "python pdist.py {input} {output}"
+    input: "{tag}/data.npz"
+    output: "{tag}/pdist.npz"
+    shell: "python -m nlsa.pdist {input} {output}"
 
 
 rule data:
-    input: "bin15.nc"
-    params: var='w', tdim ='t'
-    output: "data.npz"
+    output: "{tag}/data.npz"
+    params: tag="{tag}"
     run:
-        x = xray.open_dataset(input[0])
+        datakw = config['data'][params.tag]
+        varname = datakw[ 'var' ]
+        tdim = datakw['tdim']
 
-        v = x[params.var]
+        v = getattr(data, varname)
         v = v.fillna(0.0)
-        v -= v.mean(params.tdim)
 
-        nt = len(v.coords[params.tdim])
+        nt = len(v.coords[tdim])
         out = np.reshape(v.values, (nt, -1))
         np.savez(output[0], out)

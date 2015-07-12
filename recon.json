@@ -30,7 +30,7 @@
             "linmap": [0,1,2,3,4,5],
             "time_range": [10000, 13000]},
         "alpha0/nu/S1/{tag}/Rlow":{
-            "linmap": [5,],
+            "linmap": [5],
             "time_range": [10000, 13000]},
         "alpha0/nu/S1/{tag}/Rhigh":{
             "linmap": [1,2],

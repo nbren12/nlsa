@@ -1,0 +1,4 @@
+data:
+  wthermo:
+    var: w
+    tdim: t

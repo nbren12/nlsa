@@ -15,6 +15,7 @@ recons:
     time_range: [10000, 13000]
 svds:
   wthermo/q200/Ee1_a0/wthermo/S1: 50
+  wthermo/q200/Ee1_a1/wthermo/S1: 50
 tags:
 - wthermo
 - T

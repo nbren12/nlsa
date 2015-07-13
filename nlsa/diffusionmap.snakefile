@@ -68,10 +68,11 @@ rule kernel:
         K = compute_kernel(dist, xi, float(eps))
 
 
-        norm = K.sum(axis=0)
+        norm = np.nansum(K, axis=0)
         norm = norm**alpha
+        norm[ norm < 1e-9] = 1.0 # Fill in ones to avoid /0 error
 
-        K / norm[:,None]/ norm[None,:]
+        K /= norm[:,None]*norm[None,:]
         np.savez(output[0], K)
 
 rule embed_dist:

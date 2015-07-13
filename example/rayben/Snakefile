@@ -1,7 +1,22 @@
-configfile: "nlsa.yaml"
-include: "../../nlsa/recon.snakefile"
-include: "../../nlsa/diffusionmap.snakefile"
+"""
+An Example workflow for NLSA analysis on a rayleigh benard convection dataset
 
+Usage:
+1. Specify path to NLSA root
+2. Specify the configuration file
+3. Run `snakemake <target>` from the shell
+
+"""
+
+# specify path to NLSA
+nlsapath="/scratch/noah/nlsa"
+
+import sys
+sys.path.insert(0, nlsapath)
+include: nlsapath + "/nlsa/recon.snakefile"
+include: nlsapath + "/nlsa/diffusionmap.snakefile"
+
+configfile: "nlsa.yaml"
 workdir: "anl"
 
 rule all:

@@ -1,8 +1,9 @@
+# The data are given in the form
 data:
   wthermo:
-    module: /home/noah/scratch/nlsa/data.py
-    var: w
-    tdim: t
+    module: /home/noah/scratch/nlsa/data.py # python module which loads the data
+    var: w                                  # variable name
+    tdim: t                                 # name of the time dimension
 lags: 200
 recons:
   wthermo/q200/Ee1_a0/{tag}/Roscil:

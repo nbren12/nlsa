@@ -22,7 +22,7 @@ def embed_pdist(C, q):
     """
 
     s = C.shape[0]
-    Cout = np.empty_like(C)
+    Cout = np.ones_like(C) *np.nan
     Cout[:] = np.nan
 
     for i in range(q, s):
@@ -50,14 +50,14 @@ def embed_pdist_fast(C,q):
     algorithm may be necessary.
     """
     s,s1 = C.shape
-    Cout = np.empty_like(C)
-    Cout[:] = np.nan
+    Cout = np.ones_like(C) *np.nan
 
     # sum along diagonals storing data in input array
     for i in range(1,s):
         for j in range(1,s1):
             C[i,j] += C[i-1,j-1]
-
+        
+        
     # calculate difference of summed data
     for i in range(q, s):
         for j in range(q, s1):

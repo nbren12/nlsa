@@ -102,6 +102,7 @@ rule pdist:
         D = np.diag(P)
 
         C = D[:,None] + D[None,:] -2*P
+        C[C <0] =0.0
         np.savez(output[0], C)
 
 

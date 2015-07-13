@@ -1,7 +1,7 @@
 # The data are given in the form
 data:
   wthermo:
-    module: /home/noah/scratch/nlsa/data.py # python module which loads the data
+    module: /home/noah/scratch/nlsa/example/rayben/data.py  # python module which loads the data
     var: w                                  # variable name
     tdim: t                                 # name of the time dimension
 lags: 200

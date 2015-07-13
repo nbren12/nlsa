@@ -1,6 +1,6 @@
 configfile: "nlsa.yaml"
-include: "nlsa/recon.snakefile"
-include: "nlsa/diffusionmap.snakefile"
+include: "../../nlsa/recon.snakefile"
+include: "../../nlsa/diffusionmap.snakefile"
 
 workdir: "anl"
 

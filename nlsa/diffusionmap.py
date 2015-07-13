@@ -37,6 +37,45 @@ def embed_pdist(C, q):
     return Cout
 
 @autojit
+def embed_pdist_fast(C,q):
+    """
+    A faster implementation of embed_pdist which may suffer from have
+    cancellation floating point errors.
+
+    This algorithm is O(s^2 + s^2). The other algorithm is O(q * s^2).
+
+    Works by commulatively summing along the diagonals and then differencing
+    the sum. This code yields identical results for 10000x10000 matrices, but
+    if numerical cancellations become an issue, a block version of this
+    algorithm may be necessary.
+    """
+    s,s1 = C.shape
+    Cout = np.empty_like(C)
+    Cout[:] = np.nan
+
+    # sum along diagonals storing data in input array
+    for i in range(1,s):
+        for j in range(1,s1):
+            C[i,j] += C[i-1,j-1]
+
+    # calculate difference of summed data
+    for i in range(q, s):
+        for j in range(q, s1):
+            Cout[i,j] = C[i,j] - C[i-q, j-q]
+    return Cout
+
+
+def test_embed_pdist():
+    C = np.random.rand(1000,1000)
+    q = 100
+
+    D = embed_pdist(C, q)
+    D1 = embed_pdist_fast(C.copy(), q)
+    np.testing.assert_allclose(D, D1)
+    
+
+
+@autojit
 def compute_autotuning(C):
     """
     uses second order centered difference

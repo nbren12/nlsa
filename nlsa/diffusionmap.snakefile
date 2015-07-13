@@ -95,7 +95,14 @@ rule at:
 rule pdist:
     input: "{tag}/data.npz"
     output: "{tag}/pdist.npz"
-    shell: "python -m nlsa.pdist {input} {output}"
+    # shell: "python -m nlsa.pdist {input} {output}"
+    run:
+        X = np.load(input[0])['arr_0']
+        P = X.dot(X.T)
+        D = np.diag(P)
+
+        C = D[:,None] + D[None,:] -2*P
+        np.savez(output[0], C)
 
 
 rule data:

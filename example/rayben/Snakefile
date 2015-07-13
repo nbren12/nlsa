@@ -7,3 +7,14 @@ workdir: "anl"
 rule all:
     input: "wthermo/q200/Ee1_a0/wthermo/S1/orthog.pkl"
 
+
+rule vis:
+    input: "{dir}/orthog.pkl"
+    output: "{dir}/vis"
+    run:
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        df =  pd.read_pickle(input[0])
+        df.ix[:,:30].plot(subplots=True, layout=(-1,5))
+        plt.suptitle(wildcards.dir)
+        plt.show()

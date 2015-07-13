@@ -1,5 +1,7 @@
 from nlsa.io import get_data
-from nlsa.diffusionmap import pdist_dask, compute_kernel, embed_pdist, compute_autotuning
+from nlsa.diffusionmap import (pdist_dask, compute_kernel, 
+                               embed_pdist_fast as embed_pdist, 
+                               compute_autotuning)
 import h5py
 import xray
 import numpy as np

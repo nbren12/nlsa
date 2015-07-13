@@ -90,9 +90,30 @@ rule svd:
         vT['metric'] = phi.metric
         vT.dropna().to_pickle(output.o[0])
 
+def alags_inputs(wildcards):
+    # Search for number of lags in names of parent dirs
+    d = wildcards.dir
+    pat = re.compile("q(\d+)")
+    lags = None
+    for subdir in d.split('/'):
+        match = pat.match(subdir)
+        if match:
+            lags =  int(match.group(1))
+            break
+
+    # if no lags found the raise error
+    if not lags:
+        raise ValueError
+
+    # if lags make file
+    return [ os.path.join(wildcards.dir, wildcards.tag, "%d.amat.pkl"%lag)
+            for lag in range(lags)]
+        
+
 
 rule alags:
-    input: expand("{{dir}}/{{tag}}/{lag}.amat.pkl", lag=range(config['lags']))
+    # input: expand("{{dir}}/{{tag}}/{lag}.amat.pkl", lag=range(config['lags']))
+    input: alags_inputs
     output: "{dir}/{tag}/amat.nc"
     run:
         tag= wildcards.tag
@@ -133,7 +154,7 @@ def get_recon(tag, rdir, config):
             return config['recons'][k]
 
 rule recon_all:
-    input: a=expand("{{dir}}/{{tag}}/{lag}.amat.pkl", lag=range(config['lags'])),\
+    input: a=alags_inputs,\
            o="{dir}/orthog.pkl"
     output: pkl="{dir}/{tag}/R{recon}/recon.pkl"
     run:

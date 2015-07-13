@@ -5,6 +5,5 @@ include: "../../nlsa/diffusionmap.snakefile"
 workdir: "anl"
 
 rule all:
-    input: "wthermo/q20/e1_a0/wthermo/Rosci/recon.nc"
-
+    input: "wthermo/q200/Ee1_a0/wthermo/S1/orthog.pkl"
 

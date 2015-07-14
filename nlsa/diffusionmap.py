@@ -115,3 +115,16 @@ def sparsify(K, nearest=4000):
 
     return mask
 
+
+def symmetric2orthog(phi, t):
+    """convert symmetric eigenfunctions to laplacian eigenfunctions"""
+    import pandas as pd
+    metric = phi[:,0].copy()**2
+    tot = metric[-np.isnan(metric)].sum()
+    metric /= tot
+    phi = phi[:,1:]/phi[:,0][:,None]
+
+    phi=  pd.DataFrame(phi, index=t)
+    phi['metric'] = metric
+
+    return phi

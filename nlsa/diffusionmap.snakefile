@@ -1,13 +1,16 @@
 from nlsa.io import get_data
 from nlsa.diffusionmap import (pdist_dask, compute_kernel, 
                                embed_pdist_fast as embed_pdist, 
-                               compute_autotuning)
+                               compute_autotuning,
+                               symmetric2orthog)
 import h5py
 import xray
 import numpy as np
 import pickle
 from scipy.sparse.linalg import eigsh
 import imp
+
+
 
 rule eigs2orthog:
     input: eigs="{tag}/{a}/E{b,[^/]*}/eigs.pkl", time="{tag}/time.npz"
@@ -19,13 +22,7 @@ rule eigs2orthog:
         t = np.load(input.time[0])['arr_0']
 
         phi = d['phi']
-        metric = phi[:,0].copy()**2
-        tot = metric[-np.isnan(metric)].sum()
-        metric /= tot
-        phi = phi[:,1:]/phi[:,0][:,None]
-
-        phi=  pd.DataFrame(phi, index=t)
-        phi['metric'] = metric
+        phi = symmetric2orthog(phi, t)
 
         phi.dropna().to_pickle(output[0])
 

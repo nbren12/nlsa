@@ -5,8 +5,8 @@ data:
     var: w                                  # variable name
     tdim: t                                 # name of the time dimension
 diffmaps:
-  q200/Ealpha0:
-    lags: 200
+  q20/Ealpha0:
+    lags: 20
     eps: 1.0
     alpha: 0
 recons:

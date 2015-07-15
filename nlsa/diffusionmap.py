@@ -84,8 +84,7 @@ def compute_autotuning(C):
     xi:  |x_i- x_{i-1}|^2
     """
     s = C.shape[0]
-    at = np.empty_like(C[0])
-    at[:] = np.nan
+    at = np.ones_like(C[0]) *np.nan
 
     for i in range(1,s-1):
         at[i] = C[i+1,i-1]

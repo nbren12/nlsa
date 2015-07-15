@@ -8,6 +8,7 @@ import xray
 import numpy as np
 import pickle
 from scipy.sparse.linalg import eigsh
+from scipy.sparse import csc_matrix
 import imp
 
 
@@ -33,6 +34,10 @@ rule eigs:
     params: neig="100"
     output: "{dir}/E{a}/eigs.pkl"
     run:
+        # num_neighbors = 5000
+        num_neighbors = None # if num neigbors
+
+
         neig = int(params.neig)
         K = np.load(input[0])['arr_0']
 
@@ -41,8 +46,19 @@ rule eigs:
         ind = np.any(-np.isnan(K), axis=-1).nonzero()[0][0]
         mask = np.isnan(K[ind])
 
-        # Fill nas with 0
-        K[np.isnan(K)] = 0.0
+        # Fill na with zero 
+        K[np.isnan(K)] = 0
+
+        # Nearest neighbors
+        if num_neighbors:
+            inds = K.argsort(axis=1)
+            num_no_neighbs = K.shape[0] - num_neighbors
+            xind = np.arange(inds.shape[0])[:,None]
+            yind  = inds[:,:num_no_neighbs]
+            K[xind, yind] = 0
+
+            # Symmetrize
+            K = ( K + K.T)/2
 
         # Eigenvalue problem
         lam, phi = eigsh(K, k=neig)
@@ -70,6 +86,7 @@ rule kernel:
         norm[ norm < 1e-9] = 1.0 # Fill in ones to avoid /0 error
 
         K /= norm[:,None]*norm[None,:]
+
         np.savez(output[0], K)
 
 rule embed_dist:

@@ -127,3 +127,11 @@ def symmetric2orthog(phi, t):
     phi['metric'] = metric
 
     return phi
+
+def symmetric(phi, t):
+    import pandas as pd
+
+    phi=  pd.DataFrame(phi, index=t)
+    phi['metric'] = 1.0
+    phi.metric /= phi.metric.sum()
+    return phi

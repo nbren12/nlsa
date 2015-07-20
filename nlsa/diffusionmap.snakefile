@@ -2,7 +2,7 @@ from nlsa.io import get_data
 from nlsa.diffusionmap import (pdist_dask, compute_kernel, 
                                embed_pdist_fast as embed_pdist, 
                                compute_autotuning,
-                               symmetric2orthog)
+                               symmetric2orthog, symmetric)
 import h5py
 import xray
 import numpy as np
@@ -22,8 +22,10 @@ rule eigs2orthog:
         d = np.load(input.eigs[0])
         t = np.load(input.time[0])['arr_0']
 
-        phi = d['phi']
-        phi = symmetric2orthog(phi, t)
+        if config['symmetric_eigs']:
+            phi = symmetric(d['phi'], t)
+        else:
+            phi = symmetric2orthog(d['phi'], t)
 
         phi.dropna().to_pickle(output[0])
 

@@ -131,7 +131,9 @@ def symmetric2orthog(phi, t):
 def symmetric(phi, t):
     import pandas as pd
 
+    phi /= np.nansum(phi**2, axis=0)
     phi=  pd.DataFrame(phi, index=t)
     phi['metric'] = 1.0
     phi.metric /= phi.metric.sum()
+
     return phi

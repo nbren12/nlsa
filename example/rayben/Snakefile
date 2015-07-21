@@ -1,3 +1,4 @@
+# vim: syntax=python tabstop=4 expandtab
 """
 An Example workflow for NLSA analysis on a rayleigh benard convection dataset
 
@@ -10,26 +11,40 @@ Usage:
 
 # specify path to NLSA
 nlsapath="/scratch/noah/nlsa"
+#nlsapath = "https://bitbucket.org/nbren12/pynlsa/raw/master/" 
 
 import sys
-sys.path.insert(0, nlsapath)
+from gnl import findroot
+sys.path.insert(0, nlsapath)    # NLSA path
+sys.path.insert(0, findroot())  # add project root to path
+from rayben.plots import *
+
+#
+#  Include snakefiles
+#
+
+
 include: nlsapath + "/nlsa/recon.snakefile"
 include: nlsapath + "/nlsa/diffusionmap.snakefile"
 
 configfile: "nlsa.yaml"
-workdir: "anl"
 
-rule all:
-    input: "wthermo/q200/Ee1_a0/wthermo/S1/orthog.pkl"
+subworkflow dataw:
+    workdir: ""
+    snakefile: "bin.snake"
 
 
-rule vis:
-    input: "{dir}/orthog.pkl"
-    output: "{dir}/vis"
-    run:
-        import matplotlib.pyplot as plt
-        import pandas as pd
-        df =  pd.read_pickle(input[0])
-        df.ix[:,:30].plot(subplots=True, layout=(-1,5))
-        plt.suptitle(wildcards.dir)
-        plt.show()
+data_template = \
+"""
+import xray
+
+w = xray.open_dataset("{w}").w
+w  -= w.mean('t')
+"""
+
+rule get_bin:
+    input: w=dataw("bin.nc")
+    output: "data.py"
+    run: 
+        with open(output[0],"w") as  f:
+            f.write(data_template.format(w=input[0]))

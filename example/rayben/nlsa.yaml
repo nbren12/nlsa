@@ -1,23 +1,36 @@
 # The data are given in the form
 data:
   wthermo:
-    module: /home/noah/scratch/nlsa/example/rayben/data.py  # python module which loads the data
-    var: w                                  # variable name
-    tdim: t                                 # name of the time dimension
+    netcdf: bin.nc # pointer to netcdf file name
+    var: demean    # variable name
+    tdim: t        # name of the time dimension
+  nu:
+    netcdf: nu.nc # pointer to netcdf file name
+    var: nu    # variable name
+    tdim: t        # name of the time dimension
 diffmaps:
-  q20/Ealpha0:
-    lags: 20
-    eps: 1.0
-    alpha: 0
+  base:
+    eps: 0.5
+    alpha: 0.5
+    symmetric_eigs: false
+  base_sym:
+    eps: 0.5
+    alpha: 0.5
+    symmetric_eigs: true
+  smalleps:
+    eps: 0.5
+    alpha: 0.5
+    symmetric_eigs: false
 recons:
-  wthermo/q200/Ee1_a0/{tag}/Roscil:
+  #
+  # Noah version of NLSA alpha=1/2
+  #
+  wthermo/q20/Ee0.5_a0.5/{tag}/Roscil1:
     linmap: [1,2]
-    time_range: [10000, 13000]
+    time_range: [10000, 17000]
 svds:
-  wthermo/q200/Ee1_a0/wthermo/S1: 50
-  wthermo/q200/Ee1_a1/wthermo/S1: 50
+  "50": 50
 tags:
 - wthermo
 - T
 - uX
-symmetric_eigs: true

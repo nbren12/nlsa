@@ -22,7 +22,7 @@ rule eigs2orthog:
         d = np.load(input.eigs[0])
         t = np.load(input.time[0])['arr_0']
 
-        if config['symmetric_eigs']:
+        if config['diffmaps'][wildcards.b]['symmetric_eigs']:
             phi = symmetric(d['phi'], t)
         else:
             phi = symmetric2orthog(d['phi'], t)
@@ -73,14 +73,15 @@ rule eigs:
 
 rule kernel:
     input: at="{dir}/at.npz", dist="{dir}/emb_pdist.npz"
-    output: "{dir}/Ee{eps}_a{alpha}/K.npz"
+    output: "{dir}/E{a}/K.npz"
     run:
-        alpha = float(wildcards.alpha)
-        eps = float(wildcards.eps)
+        diffmap = config['diffmaps'][wildcards.a]
+        alpha = diffmap['alpha']
+        eps = diffmap['eps']
 
         xi = np.load(input.at[0])['arr_0']
         dist = np.load(input.dist[0])['arr_0']
-        K = compute_kernel(dist, xi, float(eps))
+        K = compute_kernel(dist, xi, eps)
 
 
         norm = np.nansum(K, axis=0)

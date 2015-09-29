@@ -49,7 +49,8 @@ def recon_lag(idx, A, time_range=(0,100), linmap=(0,), phi=None, **kw):
 
     # Subset
     idx = idx[ (idx >= time_range[0]) & (idx < time_range[1])]
-    philoc = philoc.ix[idx].values /mu0[idx].values[:,None]
+    philoc = philoc.ix[idx].values
+    
 
     return idx, philoc.dot(X)
 

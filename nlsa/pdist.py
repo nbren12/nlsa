@@ -1,5 +1,5 @@
 from .diffusionmap import pdist_dask
-import xray
+import xarray
 import numpy as np
 import sys
 
@@ -12,4 +12,3 @@ X = np.load(input)['arr_0']
 C = pdist_dask(X)
 C = np.asarray(C)
 np.savez(output, C)
-

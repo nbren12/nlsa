@@ -1,6 +1,6 @@
 from nlsa.io import get_data
-from nlsa.diffusionmap import (pdist_dask, compute_kernel, 
-                               embed_pdist_fast as embed_pdist, 
+from nlsa.diffusionmap import (pdist_dask, compute_kernel,
+                               embed_pdist_fast as embed_pdist,
                                compute_autotuning,
                                symmetric2orthog, symmetric)
 import h5py
@@ -16,11 +16,11 @@ import imp
 rule eigs2orthog:
     input: eigs="{tag}/{a}/E{b,[^/]*}/eigs.pkl", time="{tag}/time.npz"
     output: "{tag}/{a}/E{b,[^/]*}/orthog.pkl"
-    run: 
+    run:
         import pandas as pd
 
-        d = np.load(input.eigs[0])
-        t = np.load(input.time[0])['arr_0']
+        d = np.load(input.eigs)
+        t = np.load(input.time)['arr_0']
 
         if config['diffmaps'][wildcards.b]['symmetric_eigs']:
             phi = symmetric(d['phi'], t)
@@ -48,7 +48,7 @@ rule eigs:
         ind = np.any(-np.isnan(K), axis=-1).nonzero()[0][0]
         mask = np.isnan(K[ind])
 
-        # Fill na with zero 
+        # Fill na with zero
         K[np.isnan(K)] = 0
 
         # Nearest neighbors
@@ -79,8 +79,8 @@ rule kernel:
         alpha = diffmap['alpha']
         eps = diffmap['eps']
 
-        xi = np.load(input.at[0])['arr_0']
-        dist = np.load(input.dist[0])['arr_0']
+        xi = np.load(input.at)['arr_0']
+        dist = np.load(input.dist)['arr_0']
         K = compute_kernel(dist, xi, eps)
 
 
@@ -131,10 +131,11 @@ rule data:
         v = v.fillna(0.0)
 
         nt = len(v.coords[tdim])
-        
+
         out = np.reshape(v.values, (nt, -1))
-        np.savez(output.data[0], out)
+        print(output.data)
+        np.savez(output.data, out)
 
 
         time = np.asarray(v.coords[tdim])
-        np.savez(output.time[0], time)
+        np.savez(output.time, time)

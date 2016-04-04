@@ -4,7 +4,7 @@ __author__ = 'noah'
 import pickle
 import re
 import numpy as np, pandas as pd
-import xray
+import xarray
 
 
 from .recon import project_lag
@@ -20,14 +20,14 @@ def get_lag_from_fn(filename):
 # The project the data
 def mk_amat(output_filename, data, lag, phi, field='T'):
     """
-    datafile is an xray object with 't' dimension first
+    datafile is an xarray object with 't' dimension first
 
     TODO: this step uses a ton of memory! use on disk arrays maybe.
     """
-    # 
-    
+    #
+
     # Convert to pandas for helpful alignment
-    # raw = xray.open_dataset(datafile)[field]
+    # raw = xarray.open_dataset(datafile)[field]
 
     # Flatten data (assume 't' is first)
     arr = np.reshape(data.values, (data.shape[0], -1))
@@ -50,7 +50,7 @@ def recon_lag(idx, A, time_range=(0,100), linmap=(0,), phi=None, **kw):
     # Subset
     idx = idx[ (idx >= time_range[0]) & (idx < time_range[1])]
     philoc = philoc.ix[idx].values
-    
+
 
     return idx, philoc.dot(X)
 
@@ -79,7 +79,7 @@ def recon_all(inputs, orthog, output, **kw):
     out.to_pickle(output)
 
 
-def df2xray(t, arr, base: xray.DataArray, name='w') -> xray.DataArray:
+def df2xarray(t, arr, base: xarray.DataArray, name='w') -> xarray.DataArray:
 
     if t is None:
         nt = arr.shape[0]
@@ -90,8 +90,8 @@ def df2xray(t, arr, base: xray.DataArray, name='w') -> xray.DataArray:
     shape = (nt,) + base.shape
     arr = np.reshape(arr, shape)
 
-    dims = ('t',) + base.dims
+    dims = ('time',) + base.dims
     coords = {key: np.asarray(base.coords[key]) for key in dims}
-    coords['t'] = np.asarray(t)
+    coords['time'] = np.asarray(t)
 
-    return xray.DataArray(arr, coords=coords, name=name, dims=dims)
+    return xarray.DataArray(arr, coords=coords, name=name, dims=dims)

@@ -25,12 +25,12 @@ from gnl.xray import *
 
 def nc2dfpair(nc):
 
-    wT = xray.open_dataset(nc)
+    wT = xarray.open_dataset(nc)
     wT['half'] = wT.z >= .5
 
     arr = wT.groupby('half')\
             .apply(lambda x: integrate(x['wT'], axis='z'))
-    df = pd.DataFrame(arr.values.T, index=arr.coords['t'])
+    df = pd.DataFrame(arr.values.T, index=arr.coords['time'])
     
     return df
 
@@ -50,7 +50,7 @@ rule wT:
     input: "wthermo/{linmap}/recon.nc"
     output: "wthermo/{linmap}/wT.nc"
     run:
-        wT(xray.open_dataset(input[0])['w'])\
+        wT(xarray.open_dataset(input[0])['w'])\
             .rename('wT')\
             .to_dataset()\
             .to_netcdf(output[0])
@@ -61,13 +61,13 @@ rule svd:
             o="{dir}/{tag}/S{svdspec,[^/]*}/orthog.pkl"
     run:
         from numpy.linalg import svd
-        amat = xray.open_dataset(input[0])['amat']
+        amat = xarray.open_dataset(input[0])['amat']
 
         spec = config['svds'][wildcards.svdspec]
         inds = range(spec)
 
         # Load eigenvalues
-        phi =  pd.read_pickle(input.phi[0])
+        phi =  pd.read_pickle(input.phi)
         amat = amat.sel(eignum=inds)
 
         # Turn amat into flat array
@@ -85,10 +85,10 @@ rule svd:
         U, S, V = svd(amat, full_matrices=False)
         vT  = phi.ix[:,inds].dot(V.T)
 
-        pickle.dump( (U, S, V, vT), open(output.a[0], "wb"))
+        pickle.dump( (U, S, V, vT), open(output.a, "wb"))
 
         vT['metric'] = phi.metric
-        vT.dropna().to_pickle(output.o[0])
+        vT.dropna().to_pickle(output.o)
 
 def alags_inputs(wildcards):
     # Search for number of lags in names of parent dirs
@@ -117,7 +117,7 @@ rule alags:
     output: "{dir}/{tag}/amat.nc"
     run:
         tag= wildcards.tag
-        base = get_data(config, tag)[0].isel(t=0)
+        base = get_data(config, tag)[0].isel(time=0)
         As = []
         lags = []
 
@@ -125,13 +125,13 @@ rule alags:
             lag  = re.search("(\d+)\.amat\.pkl", i).group(1)
             lag  = int(lag)
             ind, A = pickle.load(open(i, "rb"))
-            xd = df2xray(None, A, base, name='amat')\
+            xd = df2xarray(None, A, base, name='amat')\
                  .assign_coords(lag=lag)\
-                 .rename({'t':'eignum'})
+                 .rename({'time':'eignum'})
 
             As.append(xd)
 
-        xray.concat(As, 'lag').to_dataset().to_netcdf(output[0])
+        xarray.concat(As, 'lag').to_dataset().to_netcdf(output[0])
         
 
 
@@ -140,9 +140,9 @@ rule pkl2nc:
     output: "{dir}/{tag}/R{recon}/recon.nc"
     run:
         tag= wildcards.tag
-        base = get_data(config, tag)[0].isel(t=0)
+        base = get_data(config, tag)[0].isel(time=0)
         df = pd.read_pickle(input[0])
-        df2xray(df.index, df.values, base, name='w')\
+        df2xarray(df.index, df.values, base, name='w')\
             .to_dataset()\
             .to_netcdf(output[0])
 
@@ -158,9 +158,9 @@ rule recon_all:
            o="{dir}/orthog.pkl"
     output: pkl="{dir}/{tag}/R{recon}/recon.pkl"
     run:
-        pkl = output.pkl[0]
+        pkl = output.pkl
         rc = get_recon(wildcards.tag, os.path.dirname(pkl), config)
-        recon_all(input.a, input.o[0], pkl, **rc)
+        recon_all(input.a, input.o, pkl, **rc)
 
 
 

@@ -142,7 +142,7 @@ rule pkl2nc:
         tag= wildcards.tag
         base = get_data(config, tag)[0].isel(time=0)
         df = pd.read_pickle(input[0])
-        df2xarray(df.index, df.values, base, name='w')\
+        df2xarray(df.index, df.values, base, name=tag)\
             .to_dataset()\
             .to_netcdf(output[0])
 

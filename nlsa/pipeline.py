@@ -43,9 +43,8 @@ def recon_lag(idx, A, time_range=(0,100), linmap=(0,), phi=None, **kw):
 
     X = A[linmap, :]
     # from pdb import set_trace; set_trace()
-    philoc = phi.ix[:, linmap].set_index(idx)
-    mu0    = phi.metric
-    mu0.index = idx
+    philoc = phi.ix[idx, linmap]
+    mu0    = phi.metric.ix[idx]
 
     # Subset
     idx = idx[ (idx >= time_range[0]) & (idx < time_range[1])]

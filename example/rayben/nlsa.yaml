@@ -1,13 +1,14 @@
 # The data are given in the form
 data:
-  wthermo:
-    netcdf: bin.nc # pointer to netcdf file name
-    var: demean    # variable name
-    tdim: t        # name of the time dimension
   nu:
     netcdf: nu.nc # pointer to netcdf file name
     var: nu    # variable name
     tdim: t        # name of the time dimension
+  wthermo:
+    module: data.py
+    var: w
+    tdim: t
+
 diffmaps:
   base:
     eps: 0.5

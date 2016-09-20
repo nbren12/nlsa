@@ -8,16 +8,14 @@ Usage:
 3. Run `snakemake <target>` from the shell
 
 """
-
-# specify path to NLSA
-nlsapath="/scratch/noah/nlsa"
-#nlsapath = "https://bitbucket.org/nbren12/pynlsa/raw/master/" 
-
 import sys
-from gnl import findroot
+from gnl.os import findroot
+
+#nlsapath = "https://bitbucket.org/nbren12/pynlsa/raw/master/" 
+nlsapath=findroot()
+
 sys.path.insert(0, nlsapath)    # NLSA path
 sys.path.insert(0, findroot())  # add project root to path
-from rayben.plots import *
 
 #
 #  Include snakefiles

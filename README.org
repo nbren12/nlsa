@@ -1,27 +1,15 @@
 * Usage
 
-First edit the [[file:nlsa.yaml][nlsa.yaml]] to have a appropriate configuration. Here is an example configuration
-
-#+BEGIN_EXAMPLE
-data:
-  wthermo:
-    module: /home/noah/scratch/nlsa/data.py
-    var: w
-    tdim: t
-lags: 20
-recons:
-  wthermo/q20/e1_a0/{tag}/Roscil:
-    linmap: [1,2]
-    time_range: [10000, 13000]
-svds:
-  wthermo/q20/e1_a0/wthermo/S1: 50
-tags:
-- wthermo
-- T
-- uX
-#+END_EXAMPLE
+See [[file:example/rayben/nlsa.yaml::#%20The%20data%20are%20given%20in%20the%20form][examples/rayben/nlsa.yaml]] for an example usage.
 
 * Issues
 ** TODO modify to allow for different sized recon and source datasets
 ** TODO allow for more interesting time indices
 ** TODO "time" dimension name is hardcoded
+** TODO Create some decent example datasets
+*** Lorenz63
+*** sample atmospheric datasets 
+
+    maybe download from ERA.
+** TODO create a script for easy running
+** TODO add dependencies

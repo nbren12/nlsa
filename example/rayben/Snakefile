@@ -9,13 +9,11 @@ Usage:
 
 """
 import sys
-from gnl.os import findroot
 
 #nlsapath = "https://bitbucket.org/nbren12/pynlsa/raw/master/" 
-nlsapath=findroot()
+nlsapath="../../"
 
 sys.path.insert(0, nlsapath)    # NLSA path
-sys.path.insert(0, findroot())  # add project root to path
 
 #
 #  Include snakefiles

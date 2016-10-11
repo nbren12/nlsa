@@ -1,0 +1,19 @@
+# The data are given in the form
+data:
+  psi:
+    netcdf: mse_demean.nc
+    var: psi
+    tdim: time
+diffmaps:
+  base:
+    eps: 1.0
+    alpha: 0.5
+    symmetric_eigs: false
+recons:
+  psi/q60/Ebase/{tag}/Rbam:
+    linmap: [10]
+    time_range: [61,12000]
+svds:
+  "40": 40
+tags:
+- psi

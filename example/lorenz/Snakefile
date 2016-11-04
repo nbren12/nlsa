@@ -1,0 +1,32 @@
+# vim: syntax=python tabstop=4 expandtab
+"""
+An Example workflow for NLSA analysis on a rayleigh benard convection dataset
+
+Usage:
+1. Specify path to NLSA root
+2. Specify the configuration file
+3. Run `snakemake <target>` from the shell
+
+"""
+
+# specify path to NLSA
+nlsapath="../../"
+#nlsapath = "https://bitbucket.org/nbren12/pynlsa/raw/master/" 
+
+import sys
+sys.path.insert(0, nlsapath)    # NLSA path
+
+#
+#  Include snakefiles
+#
+
+
+include: nlsapath + "/nlsa/recon.snakefile"
+include: nlsapath + "/nlsa/diffusionmap.snakefile"
+
+configfile: "nlsa.yaml"
+
+
+
+
+

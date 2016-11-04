@@ -15,7 +15,7 @@ import pandas as pd
 import os, pickle, re
 import importlib
 
-from gnl.xray import *
+from gnl.xarray import *
 
 
 #------------------------------------------------------------

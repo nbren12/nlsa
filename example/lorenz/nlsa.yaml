@@ -1,0 +1,20 @@
+# The data are given in the form
+data:
+  u:
+    netcdf: lorenz96.nc
+    var: u
+    tdim: time
+diffmaps:
+  base:
+    eps: 1.0
+    alpha: 0.5
+    symmetric_eigs: false
+    n: 10
+#recons:
+#  psi/q60/Ebase/{tag}/Rbam:
+#    linmap: [10]
+#    time_range: [61,12000]
+svds:
+  "40": 40
+tags:
+- u

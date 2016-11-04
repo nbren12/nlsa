@@ -33,14 +33,27 @@ rule eigs2orthog:
 
 rule eigs:
     input: "{dir}/E{a}/K.npz"
-    params: neig="100"
     output: "{dir}/E{a}/eigs.pkl"
     run:
         # num_neighbors = 5000
-        num_neighbors = None # if num neigbors
 
 
-        neig = int(params.neig)
+        # process configurations
+        try:
+            neig = config['diffmaps'][wildcards.a]['n']
+        except:
+            neig = 100
+
+        try:
+            num_neighbors = config['diffmaps'][wildcards.a]['num_nearest']
+        except:
+            num_neighbors = None # if num neigbors
+
+        try:
+            sparsity = config['diffmaps'][wildcards.a]['sparsity']
+        except:
+            sparsity = None # if num neigbors
+
         K = np.load(input[0])['arr_0']
 
         # Find nan mask for phi output
@@ -59,8 +72,13 @@ rule eigs:
             yind  = inds[:,:num_no_neighbs]
             K[xind, yind] = 0
 
+            K  = csc_matrix(K)
+
             # Symmetrize
             K = ( K + K.T)/2
+        elif sparsity is not None:
+            K[K < np.percentile(K, 100*(1-sparsity))] = 0.0
+            K  = csc_matrix(K)
 
         # Eigenvalue problem
         lam, phi = eigsh(K, k=neig)

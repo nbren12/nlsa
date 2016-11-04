@@ -27,6 +27,11 @@ include: nlsapath + "/nlsa/diffusionmap.snakefile"
 configfile: "nlsa.yaml"
 
 
+rule l96data:
+    input: "getdata.py"
+    output: "lorenz96.nc"
+    shell: "python getdata.py"
+
 
 
 

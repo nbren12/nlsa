@@ -9,7 +9,9 @@ diffmaps:
     eps: 1.0
     alpha: 0.5
     symmetric_eigs: false
-    n: 10
+    n: 40
+    sparsity: .01 
+
 #recons:
 #  psi/q60/Ebase/{tag}/Rbam:
 #    linmap: [10]

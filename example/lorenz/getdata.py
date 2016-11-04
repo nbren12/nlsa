@@ -10,7 +10,7 @@ def f(x, t, F):
     return np.roll(x, 1) * (np.roll(x, -1) - np.roll(x, 2)) - x + F
 
 
-tout = np.r_[0:100:1e-2]
+tout = np.r_[0:100:2e-2]
 n = 40
 xinit = np.random.rand(n) * .0001
 

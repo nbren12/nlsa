@@ -4,7 +4,7 @@ from nlsa.diffusionmap import (pdist_dask, compute_kernel,
                                compute_autotuning,
                                symmetric2orthog, symmetric)
 import h5py
-import xray
+import xarray as xr
 import numpy as np
 import pickle
 from scipy.sparse.linalg import eigsh
@@ -58,7 +58,7 @@ rule eigs:
 
         # Find nan mask for phi output
         ## Get first row of K which isn't all NAs
-        ind = np.any(-np.isnan(K), axis=-1).nonzero()[0][0]
+        ind = np.any(~np.isnan(K), axis=-1).nonzero()[0][0]
         mask = np.isnan(K[ind])
 
         # Fill na with zero

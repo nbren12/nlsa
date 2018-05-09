@@ -119,7 +119,7 @@ def symmetric2orthog(phi, t):
     """convert symmetric eigenfunctions to laplacian eigenfunctions"""
     import pandas as pd
     metric = phi[:,0].copy()**2
-    tot = metric[-np.isnan(metric)].sum()
+    tot = metric[~np.isnan(metric)].sum()
     metric /= tot
     phi = phi[:,1:]/phi[:,0][:,None]
 

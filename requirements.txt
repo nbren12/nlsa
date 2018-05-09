@@ -1,0 +1,11 @@
+dask==0.17.4
+h5py==2.7.1
+netCDF4==1.3.1
+-e git+git@github.com:nbren12/nlsa.git@2daf0aa43af3f4af70596ed496c99abd45eaab18#egg=nlsa
+numba==0.38.0
+numpy==1.14.3
+pandas==0.22.0
+scipy==1.1.0
+snakemake==4.8.1
+toolz==0.9.0
+xarray==0.10.3

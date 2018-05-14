@@ -65,6 +65,8 @@ def main():
                         help="Coifman and Lafon parameter")
     parser.add_argument("-e", "--epsilon", type=float, default=1.0,
                         help="Bandwidth of kernel")
+    parser.add_argument("-q", type=int, default=100,
+                        help="Embedding window length")
     parser.add_argument("-n", type=int, default=100,
                         help="Number of eigenfunctions to find")
     parser.add_argument("-s", "--sparsity", type=float, default=.01,
@@ -74,7 +76,7 @@ def main():
 
     if args.config:
         config_path = args.config
-        eig_path = "u/q20/Ecli/eigs.pkl"
+        eig_path = "u/q20/Ecli/orthog.pkl"
     else:
         # open and write config file
         config = make_config_file(args.input, args.variable, args.alpha,
@@ -84,7 +86,7 @@ def main():
             f.write(config)
 
         # get the orthog name
-        eig_path = f"u/q{args.n}/Ecli/eigs.pkl"
+        eig_path = f"{args.variable}/q{args.q}/Ecli/orthog.pkl"
 
     subprocess.call([
         "snakemake",
